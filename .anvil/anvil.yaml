@@ -1,0 +1,13 @@
+project:
+    name: "anvil"
+
+build:
+  artifact_dir: "target/release"
+  entrypoint: "target/release/anvil"
+  command: "cargo build --release"
+  incremental: true
+  jit: false
+
+env:
+  RUST_LOG: "debug"
+  APP_ENV: "production"

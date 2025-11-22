@@ -2,6 +2,8 @@ use std::env;
 
 use anvil::{
     cli::{Cli, Commands},
+    config::Config,
+    core::AnvilCore,
     store::fs_store::FsStore,
 };
 use clap::Parser;
@@ -18,13 +20,14 @@ fn get_project_name() -> anyhow::Result<String> {
 fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
 
-    match cli.command {
-        Commands::Pack => {
-            let name = get_project_name()?;
-            FsStore::new(format!(".anvil/store/{name}"))?;
-        }
-        _ => {}
-    }
-    println!("receive: {:#?}", cli.command);
+    let config = Config::new()?;
+    let name = get_project_name()?;
+    let store_path = FsStore::get_path(&format!(".anvil/store/{name}"));
+    let store = FsStore::new(store_path)?;
+
+    let mut anvil = AnvilCore::new(config, store, env::current_dir()?)?;
+    dbg!(&anvil);
+    anvil.interpret(&cli)?;
+
     Ok(())
 }

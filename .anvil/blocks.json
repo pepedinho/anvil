@@ -1,0 +1,14 @@
+[
+  {
+    "artefact_hash": "3bb3a212efd56af7b27cf813d795262aea9c01cdd3fe4f4eeffdaefe8cbb4e87",
+    "artefact_type": "Bin",
+    "created_at": {
+      "secs_since_epoch": 1763828188,
+      "nanos_since_epoch": 95988788
+    },
+    "git_commit": "b62c75bc4ff56628183481d3b7fb4c9f1fc8fdc9",
+    "prev_block_hash": null,
+    "block_hash": "4588cebe0767e482e467abbf0dedd7d2465f7056153f7b0ad05b47dbd0c17a48",
+    "entrypoint": "/home/pepe/code/rust/project/anvil/target/release/anvil"
+  }
+]
