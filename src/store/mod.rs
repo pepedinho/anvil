@@ -2,6 +2,8 @@ use std::path::PathBuf;
 
 pub mod fs_store;
 pub mod meta;
+pub mod mock;
+pub mod tests;
 pub mod traits;
 
 pub struct StoreRef {

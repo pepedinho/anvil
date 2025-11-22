@@ -1,17 +1,13 @@
-use std::{
-    fs,
-    path::PathBuf,
-    process::Stdio,
-    time::{Duration, SystemTime},
-};
+use std::{fs, path::PathBuf};
 
-use indicatif::{ProgressBar, ProgressStyle};
+pub mod cmd;
+pub mod tests;
 
 use crate::{
     cli::{Cli, Commands},
-    config::{Build, Config},
+    config::Config,
     store::{
-        meta::{ArtefactType, Meta, get_last_commit},
+        meta::{Meta, get_last_commit},
         traits::Store,
     },
 };
@@ -79,86 +75,4 @@ impl<S: Store> AnvilCore<S> {
     pub fn is_genesis(&self) -> bool {
         self.blocks.is_empty()
     }
-
-    pub fn pack(&mut self) -> anyhow::Result<()> {
-        if let Some(script) = &self.config.dependency_script {
-            let status = std::process::Command::new("sh")
-                .arg(script)
-                .current_dir(&self.project_root)
-                .status()?;
-            if !status.success() {
-                return Err(anyhow::anyhow!("Dependency script failed"));
-            }
-        }
-
-        run_build_cmd(&self.config.build, &self.project_root)?;
-
-        let entrypoint_path = self.project_root.join(&self.config.build.entrypoint);
-        let artifact_bytes = std::fs::read(&entrypoint_path)?;
-        let artefact_hash = S::compute_hash(&artifact_bytes);
-
-        if let Some(existing_block) = self
-            .blocks
-            .iter()
-            .find(|b| b.artefact_hash == artefact_hash)
-        {
-            println!(
-                "Artefact unchanged, reusing existing block: {}",
-                existing_block.block_hash
-            );
-            return Ok(());
-        }
-
-        let mut meta = Meta {
-            artefact_hash,
-            artefact_type: ArtefactType::Bin,
-            created_at: SystemTime::now(),
-            git_commit: self.current_commit.clone().unwrap(),
-            prev_block_hash: self.blocks.last().map(|b| b.block_hash.clone()),
-            block_hash: String::new(),
-            entrypoint: entrypoint_path.to_string_lossy().to_string(),
-        };
-
-        meta.block_hash = S::compute_block_hash(&meta);
-
-        self.store.add_artifact(&artifact_bytes, &meta)?;
-        self.blocks.push(meta);
-        self.save_blocks()?;
-
-        if self.is_genesis() {
-            println!("Genesis block created!");
-        } else {
-            println!("New block packed!")
-        }
-
-        Ok(())
-    }
-}
-
-fn run_build_cmd(build: &Build, project_root: &PathBuf) -> anyhow::Result<()> {
-    let pb = ProgressBar::new_spinner();
-
-    pb.set_style(
-        ProgressStyle::default_spinner()
-            .template("{spinner:.green} Forging... {msg}")
-            .unwrap()
-            .tick_strings(&["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]),
-    );
-    pb.enable_steady_tick(Duration::from_millis(100));
-
-    let status = std::process::Command::new("sh")
-        .arg("-c")
-        .arg(&build.command)
-        .current_dir(project_root)
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .status()?;
-
-    pb.finish_with_message("Artefact Forged !");
-
-    if !status.success() {
-        return Err(anyhow::anyhow!("Build failed with status: {:?}", status));
-    }
-
-    Ok(())
 }
