@@ -1,7 +1,7 @@
 use anyhow::Result;
 use sha2::{Digest, Sha256};
 
-use crate::store::{StoreRef, meta::Meta};
+use crate::store::meta::Meta;
 
 pub trait Store {
     fn add_artifact(&self, artifact_byte: &[u8], meta: &Meta) -> Result<()>;

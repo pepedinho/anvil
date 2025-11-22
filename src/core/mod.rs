@@ -5,7 +5,6 @@ use std::{
     time::{Duration, SystemTime},
 };
 
-use clap::Command;
 use indicatif::{ProgressBar, ProgressStyle};
 
 use crate::{
@@ -96,9 +95,22 @@ impl<S: Store> AnvilCore<S> {
 
         let entrypoint_path = self.project_root.join(&self.config.build.entrypoint);
         let artifact_bytes = std::fs::read(&entrypoint_path)?;
+        let artefact_hash = S::compute_hash(&artifact_bytes);
+
+        if let Some(existing_block) = self
+            .blocks
+            .iter()
+            .find(|b| b.artefact_hash == artefact_hash)
+        {
+            println!(
+                "Artefact unchanged, reusing existing block: {}",
+                existing_block.block_hash
+            );
+            return Ok(());
+        }
 
         let mut meta = Meta {
-            artefact_hash: S::compute_hash(&artifact_bytes),
+            artefact_hash,
             artefact_type: ArtefactType::Bin,
             created_at: SystemTime::now(),
             git_commit: self.current_commit.clone().unwrap(),
@@ -142,7 +154,7 @@ fn run_build_cmd(build: &Build, project_root: &PathBuf) -> anyhow::Result<()> {
         .stderr(Stdio::null())
         .status()?;
 
-    pb.finish_with_message("Block forged !");
+    pb.finish_with_message("Artefact Forged !");
 
     if !status.success() {
         return Err(anyhow::anyhow!("Build failed with status: {:?}", status));

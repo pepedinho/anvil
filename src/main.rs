@@ -1,11 +1,6 @@
 use std::env;
 
-use anvil::{
-    cli::{Cli, Commands},
-    config::Config,
-    core::AnvilCore,
-    store::fs_store::FsStore,
-};
+use anvil::{cli::Cli, config::Config, core::AnvilCore, store::fs_store::FsStore};
 use clap::Parser;
 
 fn get_project_name() -> anyhow::Result<String> {

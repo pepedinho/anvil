@@ -16,7 +16,6 @@ pub enum StoreState {
 #[derive(Debug)]
 pub struct FsStore {
     root: PathBuf,
-    state: StoreState,
 }
 
 fn get_home_dir() -> Option<PathBuf> {
@@ -27,18 +26,16 @@ impl FsStore {
     pub fn new(path: impl AsRef<Path>) -> Result<Self> {
         let home = get_home_dir().unwrap();
         let path = home.join(path);
-        let mut state = StoreState::Incremental;
         println!("debug: path: {:#?}", path);
 
         if !path.exists() {
             std::fs::create_dir_all(&path)?;
-            state = StoreState::Genesis;
         }
 
         if !path.is_dir() {
             return Err(anyhow::anyhow!("Store path exists but is not a directory"));
         }
-        Ok(Self { root: path, state })
+        Ok(Self { root: path })
     }
 
     pub fn get_path(path: &str) -> PathBuf {

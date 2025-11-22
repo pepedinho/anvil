@@ -46,5 +46,65 @@
     "prev_block_hash": "2250b917fe0be56e52ab5c01628b981ddcb733945a4f3ee41d622aef7427e3bf",
     "block_hash": "79009fa808ea48f19720165fb76a46778941abb56847c06afd4af46baa9aaf53",
     "entrypoint": "/home/pepe/code/rust/project/anvil/target/release/anvil"
+  },
+  {
+    "artefact_hash": "7ef827655b29891f97590421aa5abad612efef9fcfca285ad236a150e05fd573",
+    "artefact_type": "Bin",
+    "created_at": {
+      "secs_since_epoch": 1763830114,
+      "nanos_since_epoch": 343022917
+    },
+    "git_commit": "0681857f3c4602739ff689604e0786caf2458c37",
+    "prev_block_hash": "79009fa808ea48f19720165fb76a46778941abb56847c06afd4af46baa9aaf53",
+    "block_hash": "4f31c9be502b82d0f543b5ebc9a598ce282c6fd3e53760e49b67f3d6359b8851",
+    "entrypoint": "/home/pepe/code/rust/project/anvil/target/release/anvil"
+  },
+  {
+    "artefact_hash": "7ef827655b29891f97590421aa5abad612efef9fcfca285ad236a150e05fd573",
+    "artefact_type": "Bin",
+    "created_at": {
+      "secs_since_epoch": 1763830151,
+      "nanos_since_epoch": 782033155
+    },
+    "git_commit": "0681857f3c4602739ff689604e0786caf2458c37",
+    "prev_block_hash": "4f31c9be502b82d0f543b5ebc9a598ce282c6fd3e53760e49b67f3d6359b8851",
+    "block_hash": "926bef0240cbae0cf88a92de162cae54ea87f91863980610af5b874baa68abab",
+    "entrypoint": "/home/pepe/code/rust/project/anvil/target/release/anvil"
+  },
+  {
+    "artefact_hash": "7ef827655b29891f97590421aa5abad612efef9fcfca285ad236a150e05fd573",
+    "artefact_type": "Bin",
+    "created_at": {
+      "secs_since_epoch": 1763830197,
+      "nanos_since_epoch": 315484661
+    },
+    "git_commit": "0681857f3c4602739ff689604e0786caf2458c37",
+    "prev_block_hash": "926bef0240cbae0cf88a92de162cae54ea87f91863980610af5b874baa68abab",
+    "block_hash": "27dd34eeef3a2ca392f363a9d812b44d37ab6a4659dac486987fa05d8365b7ad",
+    "entrypoint": "/home/pepe/code/rust/project/anvil/target/release/anvil"
+  },
+  {
+    "artefact_hash": "3b68f125af7bef2e0b470e1d3bab710ec3f0b6678081730cce5b6dac0dfc76a3",
+    "artefact_type": "Bin",
+    "created_at": {
+      "secs_since_epoch": 1763830389,
+      "nanos_since_epoch": 775475682
+    },
+    "git_commit": "0681857f3c4602739ff689604e0786caf2458c37",
+    "prev_block_hash": "27dd34eeef3a2ca392f363a9d812b44d37ab6a4659dac486987fa05d8365b7ad",
+    "block_hash": "2f7349428ee61b90fa0c40d2d71ec0263a0161a6d361c41fcfcb455f06ef95ae",
+    "entrypoint": "/home/pepe/code/rust/project/anvil/target/release/anvil"
+  },
+  {
+    "artefact_hash": "0d15be2ba38608dbba00285b2f6ee3086fad69df240160e7c1f7bc58687961f5",
+    "artefact_type": "Bin",
+    "created_at": {
+      "secs_since_epoch": 1763830458,
+      "nanos_since_epoch": 536936359
+    },
+    "git_commit": "0681857f3c4602739ff689604e0786caf2458c37",
+    "prev_block_hash": "2f7349428ee61b90fa0c40d2d71ec0263a0161a6d361c41fcfcb455f06ef95ae",
+    "block_hash": "662c7ebf638c1b25fd9a8acfca6f41aef793dd05b20ae10044a3ce920c135261",
+    "entrypoint": "/home/pepe/code/rust/project/anvil/target/release/anvil"
   }
 ]
