@@ -2,7 +2,7 @@ use std::{path::PathBuf, process::Stdio, time::Duration};
 
 use indicatif::{ProgressBar, ProgressStyle};
 
-use crate::{ config::Build};
+use crate::config::Build;
 
 pub mod pack;
 
