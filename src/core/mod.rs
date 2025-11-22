@@ -1,8 +1,16 @@
-use std::{fs, path::PathBuf, time::SystemTime};
+use std::{
+    fs,
+    path::PathBuf,
+    process::Stdio,
+    time::{Duration, SystemTime},
+};
+
+use clap::Command;
+use indicatif::{ProgressBar, ProgressStyle};
 
 use crate::{
     cli::{Cli, Commands},
-    config::Config,
+    config::{Build, Config},
     store::{
         meta::{ArtefactType, Meta, get_last_commit},
         traits::Store,
@@ -84,6 +92,8 @@ impl<S: Store> AnvilCore<S> {
             }
         }
 
+        run_build_cmd(&self.config.build, &self.project_root)?;
+
         let entrypoint_path = self.project_root.join(&self.config.build.entrypoint);
         let artifact_bytes = std::fs::read(&entrypoint_path)?;
 
@@ -111,4 +121,32 @@ impl<S: Store> AnvilCore<S> {
 
         Ok(())
     }
+}
+
+fn run_build_cmd(build: &Build, project_root: &PathBuf) -> anyhow::Result<()> {
+    let pb = ProgressBar::new_spinner();
+
+    pb.set_style(
+        ProgressStyle::default_spinner()
+            .template("{spinner:.green} Forging... {msg}")
+            .unwrap()
+            .tick_strings(&["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]),
+    );
+    pb.enable_steady_tick(Duration::from_millis(100));
+
+    let status = std::process::Command::new("sh")
+        .arg("-c")
+        .arg(&build.command)
+        .current_dir(project_root)
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .status()?;
+
+    pb.finish_with_message("Block forged !");
+
+    if !status.success() {
+        return Err(anyhow::anyhow!("Build failed with status: {:?}", status));
+    }
+
+    Ok(())
 }
