@@ -106,5 +106,17 @@
     "prev_block_hash": "2f7349428ee61b90fa0c40d2d71ec0263a0161a6d361c41fcfcb455f06ef95ae",
     "block_hash": "662c7ebf638c1b25fd9a8acfca6f41aef793dd05b20ae10044a3ce920c135261",
     "entrypoint": "/home/pepe/code/rust/project/anvil/target/release/anvil"
+  },
+  {
+    "artefact_hash": "cf322171900646f9864b7ae7e504d836fddb318b8eeb94c8ae19ac33aa7c1d16",
+    "artefact_type": "Bin",
+    "created_at": {
+      "secs_since_epoch": 1763834823,
+      "nanos_since_epoch": 481876196
+    },
+    "git_commit": "756ecae115392f3567ef35ef106cafb1da680653",
+    "prev_block_hash": "662c7ebf638c1b25fd9a8acfca6f41aef793dd05b20ae10044a3ce920c135261",
+    "block_hash": "010aa89541d1f00edf6abeac5c2aed50d87a8a447cc40f0120ff8f95c5b8280b",
+    "entrypoint": "/home/pepe/code/rust/project/anvil/target/release/anvil"
   }
 ]

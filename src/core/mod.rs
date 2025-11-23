@@ -75,4 +75,30 @@ impl<S: Store> AnvilCore<S> {
     pub fn is_genesis(&self) -> bool {
         self.blocks.is_empty()
     }
+
+    pub fn validate_chain(&self) -> anyhow::Result<()> {
+        for i in 1..self.blocks.len() {
+            let prev = &self.blocks[i - 1];
+            let curr = &self.blocks[i];
+
+            if curr.prev_block_hash.as_deref() != Some(&prev.block_hash) {
+                return Err(anyhow::anyhow!(
+                    "Invalid chain: block {} does not correctly reference previous block {}",
+                    i,
+                    i - 1,
+                ));
+            }
+
+            let expected_hash = S::compute_block_hash(curr);
+            if expected_hash != curr.block_hash {
+                return Err(anyhow::anyhow!(
+                    "Invalid block hash for block {}: expected {}, found {}",
+                    i,
+                    expected_hash,
+                    curr.block_hash
+                ));
+            }
+        }
+        Ok(())
+    }
 }
