@@ -103,19 +103,15 @@ impl<S: Store> AnvilCore<S> {
 }
 
 pub fn interpret(cli: &Cli) -> anyhow::Result<()> {
+    let name = get_project_name()?;
+    let store_path = FsStore::get_path(&format!(".anvil/store/{name}"));
+    let store = FsStore::new(store_path)?;
     match &cli.command {
         Commands::Pack { v, tag } => {
             let config = Config::new(None)?;
-            let name = get_project_name()?;
-            let store_path = FsStore::get_path(&format!(".anvil/store/{name}"));
-            let store = FsStore::new(store_path)?;
             AnvilCore::new(Some(config), store, env::current_dir()?)?.pack(v, *tag)
         }
         Commands::Install { url, version } => {
-            let name = get_project_name()?;
-            let store_path = FsStore::get_path(&format!(".anvil/store/{name}"));
-            let store = FsStore::new(store_path)?;
-
             AnvilCore::new(None, store, env::current_dir()?)?.install(url, version.clone())
         }
         Commands::Switch {
