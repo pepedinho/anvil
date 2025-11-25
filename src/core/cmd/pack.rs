@@ -1,4 +1,4 @@
-use std::time::SystemTime;
+use std::{os::linux::raw::stat, time::SystemTime};
 
 use crate::{
     core::{AnvilCore, cmd::run_build_cmd},
@@ -9,7 +9,7 @@ use crate::{
 };
 
 impl<S: Store> AnvilCore<S> {
-    pub fn pack(&mut self, v: &str) -> anyhow::Result<()> {
+    pub fn pack(&mut self, v: &str, tag: bool) -> anyhow::Result<()> {
         if let Some(script) = &self.config.dependency_script {
             let status = std::process::Command::new("sh")
                 .arg(script)
@@ -55,11 +55,59 @@ impl<S: Store> AnvilCore<S> {
         self.blocks.push(meta);
         self.save_blocks()?;
 
+        if tag {
+            self.create_git_tag(v)
+                .map_err(|e| anyhow::bail!("block packed but failed to create git tag: {e}"))?;
+        }
+
         if self.is_genesis() {
             println!("Genesis block created!");
         } else {
             println!("New block packed!")
         }
+
+        Ok(())
+    }
+
+    fn create_git_tag(&self, version: &str) -> anyhow::Result<()> {
+        let status = std::process::Command::new("git")
+            .arg("rev-parse")
+            .arg("--is-inside-work-tree")
+            .current_dir(&self.project_root)
+            .output()?;
+
+        if !status.status.success() {
+            anyhow::bail!("Cannot create tag: current directory is not a git repository");
+        }
+
+        let tag_check = std::process::Command::new("git")
+            .arg("tag")
+            .arg("--list")
+            .arg(version)
+            .current_dir(&self.project_root)
+            .output()?;
+
+        if !tag_check.stdout.is_empty() {
+            anyhow::bail!("Git tag '{}' already exist", version);
+        }
+
+        let output = std::process::Command::new("git")
+            .arg("tag")
+            .arg("-a")
+            .arg(version)
+            .arg("-m")
+            .arg(format!("Anvil release {version}"))
+            .current_dir(&self.project_root)
+            .output()?;
+
+        if !output.status.success() {
+            anyhow::bail!(
+                "Failed to create git tag: {}",
+                String::from_utf8_lossy(&output.stderr)
+            );
+        }
+
+        println!("Git tag '{version}' created successfully!");
 
         Ok(())
     }
