@@ -1,6 +1,5 @@
 use std::{process::Command, time::SystemTime};
 
-use anyhow::Result;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -37,13 +36,13 @@ pub struct Meta {
     // pub env: HashMap<String, String>,
 }
 
-pub fn get_last_commit() -> Result<String> {
+pub fn get_last_commit() -> anyhow::Result<Option<String>> {
     let output = Command::new("git").args(["rev-parse", "HEAD"]).output()?;
 
     if !output.status.success() {
-        return Err(anyhow::anyhow!("Failed to get last_commit"));
+        return Ok(None);
     }
 
     let commit = String::from_utf8(output.stdout)?.trim().to_string();
-    Ok(commit)
+    Ok(Some(commit))
 }

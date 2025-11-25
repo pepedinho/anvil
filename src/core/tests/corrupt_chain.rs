@@ -33,7 +33,8 @@ fn test_invalid_prev_block_hash() {
 
     let fake_bin = temp.path().join("bin");
 
-    let mut anvil = crate::core::AnvilCore::new(config, store, temp.path().to_path_buf()).unwrap();
+    let mut anvil =
+        crate::core::AnvilCore::new(Some(config), store, temp.path().to_path_buf()).unwrap();
     anvil.config.build.entrypoint = fake_bin.clone();
     anvil.config.build.command = "echo".to_string();
 
@@ -75,7 +76,8 @@ fn test_block_out_of_order() {
 
     let fake_bin = temp.path().join("bin");
 
-    let mut anvil = crate::core::AnvilCore::new(config, store, temp.path().to_path_buf()).unwrap();
+    let mut anvil =
+        crate::core::AnvilCore::new(Some(config), store, temp.path().to_path_buf()).unwrap();
     anvil.config.build.entrypoint = fake_bin.clone();
     anvil.config.build.command = "echo".to_string();
 

@@ -1,4 +1,4 @@
-use std::{fs, path::PathBuf};
+use std::{env, fs, path::PathBuf};
 
 pub mod cmd;
 pub mod tests;
@@ -7,6 +7,7 @@ use crate::{
     cli::{Cli, Commands},
     config::Config,
     store::{
+        fs_store::FsStore,
         meta::{Meta, get_last_commit},
         traits::Store,
     },
@@ -21,8 +22,17 @@ pub struct AnvilCore<S: Store> {
     pub project_root: PathBuf,
 }
 
+fn get_project_name() -> anyhow::Result<String> {
+    let current = env::current_dir()?;
+    if let Some(name) = current.file_name().and_then(|n| n.to_str()) {
+        Ok(name.to_string())
+    } else {
+        Err(anyhow::anyhow!("Cannot determine project folder name"))
+    }
+}
+
 impl<S: Store> AnvilCore<S> {
-    pub fn new(config: Config, store: S, project_root: PathBuf) -> anyhow::Result<Self> {
+    pub fn new(config: Option<Config>, store: S, project_root: PathBuf) -> anyhow::Result<Self> {
         let anvil_dir = project_root.join(".anvil");
         if !anvil_dir.exists() {
             fs::create_dir_all(&anvil_dir)?;
@@ -39,23 +49,12 @@ impl<S: Store> AnvilCore<S> {
         let last_commit = get_last_commit()?;
 
         Ok(Self {
-            config,
+            config: config.unwrap_or_default(),
             store,
             blocks,
-            current_commit: Some(last_commit),
+            current_commit: last_commit,
             project_root,
         })
-    }
-
-    pub fn interpret(&mut self, cli: &Cli) -> anyhow::Result<()> {
-        match &cli.command {
-            Commands::Pack { v, tag } => self.pack(v, *tag),
-            Commands::Install { url, version } => self.install(url, version.clone()),
-            Commands::Switch {
-                project: _,
-                version: _,
-            } => Ok(()),
-        }
     }
 
     fn anvil_dir(&self) -> PathBuf {
@@ -100,5 +99,24 @@ impl<S: Store> AnvilCore<S> {
             }
         }
         Ok(())
+    }
+}
+
+pub fn interpret(cli: &Cli) -> anyhow::Result<()> {
+    let name = get_project_name()?;
+    let store_path = FsStore::get_path(&format!(".anvil/store/{name}"));
+    let store = FsStore::new(store_path)?;
+    match &cli.command {
+        Commands::Pack { v, tag } => {
+            let config = Config::new(None)?;
+            AnvilCore::new(Some(config), store, env::current_dir()?)?.pack(v, *tag)
+        }
+        Commands::Install { url, version } => {
+            AnvilCore::new(None, store, env::current_dir()?)?.install(url, version.clone())
+        }
+        Commands::Switch {
+            project: _,
+            version: _,
+        } => Ok(()),
     }
 }
