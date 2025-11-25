@@ -50,7 +50,7 @@ impl<S: Store> AnvilCore<S> {
     pub fn interpret(&mut self, cli: &Cli) -> anyhow::Result<()> {
         match &cli.command {
             Commands::Pack { v, tag } => self.pack(v, *tag),
-            Commands::Install { url: _ } => Ok(()),
+            Commands::Install { url, version } => self.install(url, version.clone()),
             Commands::Switch {
                 project: _,
                 version: _,

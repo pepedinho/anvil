@@ -11,6 +11,8 @@ pub struct Cli {
 pub enum Commands {
     Install {
         url: String,
+        #[arg(short = 'v', long)]
+        version: Option<String>,
     },
     Pack {
         v: String,
