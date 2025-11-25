@@ -22,6 +22,7 @@ pub struct Meta {
     pub artefact_hash: String,
     pub artefact_type: ArtefactType,
     pub created_at: SystemTime,
+    pub version: String,
 
     pub git_commit: String,
     // pub git_tree_hash: String,

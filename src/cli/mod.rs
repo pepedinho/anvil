@@ -9,7 +9,18 @@ pub struct Cli {
 
 #[derive(Subcommand, Debug, Clone)]
 pub enum Commands {
-    Install { url: String },
-    Pack,
-    Switch { project: String, version: String },
+    Install {
+        url: String,
+        #[arg(short = 'v', long)]
+        version: Option<String>,
+    },
+    Pack {
+        v: String,
+        #[arg(short = 't', long)]
+        tag: bool,
+    },
+    Switch {
+        project: String,
+        version: String,
+    },
 }

@@ -24,9 +24,9 @@ fn test_pack_reuse_block() {
     anvil.config.build.entrypoint = fake_bin;
     anvil.config.build.command = "echo Build".to_string();
 
-    anvil.pack().unwrap();
+    anvil.pack("0.0.1", false).unwrap();
     assert_eq!(anvil.blocks.len(), 1);
 
-    anvil.pack().unwrap();
+    anvil.pack("0.0.2", false).unwrap();
     assert_eq!(anvil.blocks.len(), 1);
 }
