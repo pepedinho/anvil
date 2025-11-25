@@ -4,7 +4,8 @@ fn test_anvilcore_new_genesis() {
     let config = crate::config::Config::default();
     let store = crate::store::mock::MockStore::new(temp_dir.path().to_string_lossy().to_string());
 
-    let anvil = crate::core::AnvilCore::new(config, store, temp_dir.path().to_path_buf()).unwrap();
+    let anvil =
+        crate::core::AnvilCore::new(Some(config), store, temp_dir.path().to_path_buf()).unwrap();
 
     assert!(anvil.is_genesis());
     assert_eq!(anvil.blocks.len(), 0);
@@ -17,7 +18,7 @@ fn test_pack_reuse_block() {
     let config = crate::config::Config::default();
 
     let mut anvil =
-        crate::core::AnvilCore::new(config, store, temp_dir.path().to_path_buf()).unwrap();
+        crate::core::AnvilCore::new(Some(config), store, temp_dir.path().to_path_buf()).unwrap();
 
     let fake_bin = temp_dir.path().join("fake_bin");
     std::fs::write(&fake_bin, b"hello").unwrap();

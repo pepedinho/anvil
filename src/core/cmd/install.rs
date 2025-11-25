@@ -4,16 +4,19 @@ use std::{
 };
 
 use crate::{
-    core::AnvilCore,
+    config::Config,
+    core::{AnvilCore, cmd::run_build_cmd},
     store::{meta::Meta, traits::Store},
 };
 
 impl<S: Store> AnvilCore<S> {
-    pub fn install(&self, url: &str, version: Option<String>) -> anyhow::Result<()> {
+    pub fn install(&mut self, url: &str, version: Option<String>) -> anyhow::Result<()> {
         let project_name = Self::extract_project_name(url)?;
         let repo_path = self.repo_install_path(&project_name)?;
 
         self.ensure_repo_cloned(url, &repo_path)?;
+
+        self.config = Config::new(Some(&repo_path.join(".anvil/anvil.yml")))?;
 
         let blocks = Self::load_block_from_repo(&repo_path)?;
         let block = Self::resolve_version(&blocks, version)?;
@@ -99,15 +102,7 @@ impl<S: Store> AnvilCore<S> {
     }
 
     pub fn build_binary(&self, repo_path: &PathBuf) -> anyhow::Result<PathBuf> {
-        let status = std::process::Command::new("sh")
-            .arg("-c")
-            .arg(&self.config.build.command)
-            .current_dir(repo_path)
-            .status()?;
-
-        if !status.success() {
-            anyhow::bail!("Build failed");
-        }
+        run_build_cmd(&self.config.build, repo_path)?;
 
         Ok(repo_path.join(&self.config.build.entrypoint))
     }
