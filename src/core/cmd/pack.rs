@@ -1,4 +1,4 @@
-use std::{os::linux::raw::stat, time::SystemTime};
+use std::time::SystemTime;
 
 use crate::{
     core::{AnvilCore, cmd::run_build_cmd},
@@ -57,7 +57,7 @@ impl<S: Store> AnvilCore<S> {
 
         if tag {
             self.create_git_tag(v)
-                .map_err(|e| anyhow::bail!("block packed but failed to create git tag: {e}"))?;
+                .map_err(|e| anyhow::anyhow!("block packed but failed to create git tag: {e}"))?;
         }
 
         if self.is_genesis() {
