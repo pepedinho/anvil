@@ -38,9 +38,9 @@ fn test_invalid_prev_block_hash() {
     anvil.config.build.command = "echo".to_string();
 
     std::fs::write(&fake_bin, b"hello").unwrap();
-    anvil.pack().unwrap();
+    anvil.pack("0.0.1").unwrap();
     std::fs::write(&fake_bin, b"world").unwrap();
-    anvil.pack().unwrap();
+    anvil.pack("0.0.2").unwrap();
 
     anvil.blocks[1].prev_block_hash = Some("FAKE_PREV_HASH".into());
 
@@ -80,11 +80,11 @@ fn test_block_out_of_order() {
     anvil.config.build.command = "echo".to_string();
 
     std::fs::write(&fake_bin, b"hello").unwrap();
-    anvil.pack().unwrap();
+    anvil.pack("0.0.1").unwrap();
     std::fs::write(&fake_bin, b"wonderful").unwrap();
-    anvil.pack().unwrap();
+    anvil.pack("0.0.2").unwrap();
     std::fs::write(&fake_bin, b"world").unwrap();
-    anvil.pack().unwrap();
+    anvil.pack("0.0.3").unwrap();
 
     anvil.blocks.reverse();
 

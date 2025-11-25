@@ -9,7 +9,7 @@ use crate::{
 };
 
 impl<S: Store> AnvilCore<S> {
-    pub fn pack(&mut self) -> anyhow::Result<()> {
+    pub fn pack(&mut self, v: &str) -> anyhow::Result<()> {
         if let Some(script) = &self.config.dependency_script {
             let status = std::process::Command::new("sh")
                 .arg(script)
@@ -45,7 +45,8 @@ impl<S: Store> AnvilCore<S> {
             git_commit: self.current_commit.clone().unwrap(),
             prev_block_hash: self.blocks.last().map(|b| b.block_hash.clone()),
             block_hash: String::new(),
-            entrypoint: entrypoint_path.to_string_lossy().to_string(),
+            entrypoint: self.config.build.entrypoint.to_string_lossy().to_string(),
+            version: v.to_string(),
         };
 
         meta.block_hash = S::compute_block_hash(&meta);

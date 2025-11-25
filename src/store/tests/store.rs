@@ -20,6 +20,7 @@ fn test_fsstore_add_and_get() {
         prev_block_hash: None,
         block_hash: hash.clone(),
         entrypoint: "test".to_string(),
+        version: "0.0.1".to_string(),
     };
 
     store.add_artifact(data, &meta).unwrap();

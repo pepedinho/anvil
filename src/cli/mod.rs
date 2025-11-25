@@ -10,6 +10,6 @@ pub struct Cli {
 #[derive(Subcommand, Debug, Clone)]
 pub enum Commands {
     Install { url: String },
-    Pack,
+    Pack { v: String },
     Switch { project: String, version: String },
 }
