@@ -4,6 +4,7 @@ use indicatif::{ProgressBar, ProgressStyle};
 
 use crate::config::Build;
 
+pub mod install;
 pub mod pack;
 
 pub fn run_build_cmd(build: &Build, project_root: &PathBuf) -> anyhow::Result<()> {
