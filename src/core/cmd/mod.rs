@@ -39,7 +39,13 @@ pub fn run_build_cmd(build: &Build, project_root: &PathBuf) -> anyhow::Result<()
     Ok(())
 }
 
-pub fn run_step(cmd: &str, dir: &Path, color: &str, msg: &str, end: &str) -> anyhow::Result<()> {
+pub fn run_step(
+    cmd: &str,
+    dir: Option<&Path>,
+    color: &str,
+    msg: &str,
+    end: &str,
+) -> anyhow::Result<()> {
     let pb = ProgressBar::new_spinner();
 
     pb.set_style(
@@ -51,13 +57,18 @@ pub fn run_step(cmd: &str, dir: &Path, color: &str, msg: &str, end: &str) -> any
 
     pb.enable_steady_tick(Duration::from_millis(100));
 
-    let status = std::process::Command::new("sh")
-        .arg("-c")
-        .arg(cmd)
-        .current_dir(dir)
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .status()?;
+    let mut command = std::process::Command::new("sh");
+
+    command.arg("-c").arg(cmd);
+
+    command.stdout(Stdio::null());
+    command.stderr(Stdio::null());
+
+    if let Some(path) = dir {
+        command.current_dir(path);
+    }
+
+    let status = command.status()?;
 
     pb.finish_with_message(end.to_string());
 

@@ -22,7 +22,7 @@ impl<S: Store> AnvilCore<S> {
 
         run_step(
             &self.config.build.command,
-            &self.project_root,
+            Some(&self.project_root),
             "green",
             "Forging...",
             "Artefact forged !",
