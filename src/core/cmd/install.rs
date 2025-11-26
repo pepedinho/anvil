@@ -112,7 +112,7 @@ impl<S: Store> AnvilCore<S> {
         // run_build_cmd(&self.config.build, repo_path)?;
         run_step(
             &self.config.build.command,
-            &repo_path,
+            repo_path,
             "cyan",
             "Cloning ...",
             "Repo cloned !",
