@@ -1,7 +1,10 @@
 use std::time::SystemTime;
 
 use crate::{
-    core::{AnvilCore, cmd::run_build_cmd},
+    core::{
+        AnvilCore,
+        cmd::{run_build_cmd, run_step},
+    },
     store::{
         meta::{ArtefactType, Meta},
         traits::Store,
@@ -20,7 +23,15 @@ impl<S: Store> AnvilCore<S> {
             }
         }
 
-        run_build_cmd(&self.config.build, &self.project_root)?;
+        run_step(
+            &self.config.build.command,
+            &self.project_root,
+            "green",
+            "Forging...",
+            "Artefact forged !",
+        )?;
+
+        // run_build_cmd(&self.config.build, &self.project_root)?;
 
         let entrypoint_path = self.project_root.join(&self.config.build.entrypoint);
         let artifact_bytes = std::fs::read(&entrypoint_path)?;
