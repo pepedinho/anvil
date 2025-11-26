@@ -62,18 +62,32 @@ impl<S: Store> AnvilCore<S> {
     fn ensure_repo_cloned(&self, url: &str, path: &Path) -> anyhow::Result<()> {
         if path.exists() {
             // update
-            std::process::Command::new("git")
-                .args(["-C", path.to_str().unwrap(), "fetch"])
-                .stdout(Stdio::null())
-                .stderr(Stdio::null())
-                .status()?;
+            // std::process::Command::new("git")
+            //     .args(["-C", path.to_str().unwrap(), "fetch"])
+            //     .stdout(Stdio::null())
+            //     .stderr(Stdio::null())
+            //     .status()?;
+            run_step(
+                &format!("git -C {} fetch", path.to_str().unwrap()),
+                None,
+                "green",
+                "Fetch",
+                "Pulled !",
+            )?;
         } else {
             // clone
-            std::process::Command::new("git")
-                .args(["clone", url, path.to_str().unwrap()])
-                .stdout(Stdio::null())
-                .stderr(Stdio::null())
-                .status()?;
+            run_step(
+                &format!("git clone {url} {}", path.to_str().unwrap()),
+                None,
+                "green",
+                "Cloning",
+                "Repo clonned !",
+            )?;
+            // std::process::Command::new("git")
+            //     .args(["clone", url, path.to_str().unwrap()])
+            //     .stdout(Stdio::null())
+            //     .stderr(Stdio::null())
+            //     .status()?;
         }
 
         Ok(())
@@ -112,10 +126,10 @@ impl<S: Store> AnvilCore<S> {
         // run_build_cmd(&self.config.build, repo_path)?;
         run_step(
             &self.config.build.command,
-            repo_path,
+            Some(repo_path),
             "cyan",
-            "Cloning ...",
-            "Repo cloned !",
+            "Forging ...",
+            "Package forged !",
         )?;
 
         Ok(repo_path.join(&self.config.build.entrypoint))
