@@ -1,10 +1,7 @@
 use std::time::SystemTime;
 
 use crate::{
-    core::{
-        AnvilCore,
-        cmd::{run_build_cmd, run_step},
-    },
+    core::{AnvilCore, cmd::run_step},
     store::{
         meta::{ArtefactType, Meta},
         traits::Store,

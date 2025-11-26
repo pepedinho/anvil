@@ -6,10 +6,7 @@ use std::{
 
 use crate::{
     config::Config,
-    core::{
-        AnvilCore,
-        cmd::{run_build_cmd, run_step},
-    },
+    core::{AnvilCore, cmd::run_step},
     store::{meta::Meta, traits::Store},
 };
 
