@@ -108,7 +108,7 @@ impl<S: Store> AnvilCore<S> {
         Ok(())
     }
 
-    pub fn build_binary(&self, repo_path: &PathBuf) -> anyhow::Result<PathBuf> {
+    pub fn build_binary(&self, repo_path: &Path) -> anyhow::Result<PathBuf> {
         // run_build_cmd(&self.config.build, repo_path)?;
         run_step(
             &self.config.build.command,
