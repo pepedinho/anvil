@@ -1,11 +1,12 @@
 use std::{
     env::home_dir,
     path::{Path, PathBuf},
+    process::Stdio,
 };
 
 use crate::{
     config::Config,
-    core::{AnvilCore, cmd::run_build_cmd},
+    core::{AnvilCore, cmd::run_step},
     store::{meta::Meta, traits::Store},
 };
 
@@ -63,11 +64,15 @@ impl<S: Store> AnvilCore<S> {
             // update
             std::process::Command::new("git")
                 .args(["-C", path.to_str().unwrap(), "fetch"])
+                .stdout(Stdio::null())
+                .stderr(Stdio::null())
                 .status()?;
         } else {
             // clone
             std::process::Command::new("git")
                 .args(["clone", url, path.to_str().unwrap()])
+                .stdout(Stdio::null())
+                .stderr(Stdio::null())
                 .status()?;
         }
 
@@ -97,12 +102,21 @@ impl<S: Store> AnvilCore<S> {
     pub fn checkout_commit(&self, repo_path: &Path, commit: &str) -> anyhow::Result<()> {
         std::process::Command::new("git")
             .args(["-C", repo_path.to_str().unwrap(), "checkout", commit])
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
             .status()?;
         Ok(())
     }
 
-    pub fn build_binary(&self, repo_path: &PathBuf) -> anyhow::Result<PathBuf> {
-        run_build_cmd(&self.config.build, repo_path)?;
+    pub fn build_binary(&self, repo_path: &Path) -> anyhow::Result<PathBuf> {
+        // run_build_cmd(&self.config.build, repo_path)?;
+        run_step(
+            &self.config.build.command,
+            repo_path,
+            "cyan",
+            "Cloning ...",
+            "Repo cloned !",
+        )?;
 
         Ok(repo_path.join(&self.config.build.entrypoint))
     }

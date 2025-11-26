@@ -11,5 +11,18 @@
     "prev_block_hash": null,
     "block_hash": "a9df9c3dfafaa1214d8baf642219ae79ad4c497286b37a3041efe884481dc3f8",
     "entrypoint": "target/release/anvil"
+  },
+  {
+    "artefact_hash": "10350aa94bae074e217e4057923f9704dc041b6114933b3429e1ebe3cf0ebae4",
+    "artefact_type": "Bin",
+    "created_at": {
+      "secs_since_epoch": 1764175862,
+      "nanos_since_epoch": 107447651
+    },
+    "version": "0.2.0",
+    "git_commit": "1f6cfed2c78c70b7e82dc3c4f240247e8c8f8007",
+    "prev_block_hash": "a9df9c3dfafaa1214d8baf642219ae79ad4c497286b37a3041efe884481dc3f8",
+    "block_hash": "be677ac6282dd3942f1fa024a87c0e611b8f30ac9faedf5abca43a910b89e85e",
+    "entrypoint": "target/release/anvil"
   }
 ]
