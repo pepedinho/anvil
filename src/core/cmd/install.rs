@@ -49,7 +49,7 @@ impl<S: Store> AnvilCore<S> {
         Ok(name)
     }
 
-    fn repo_install_path(&self, name: &str) -> anyhow::Result<PathBuf> {
+    pub fn repo_install_path(&self, name: &str) -> anyhow::Result<PathBuf> {
         let path = home_dir().unwrap().join(".anvil/repo"); //TODO: remove unwrap()
 
         if !path.exists() {
@@ -59,7 +59,7 @@ impl<S: Store> AnvilCore<S> {
         Ok(path.join(name))
     }
 
-    fn ensure_repo_cloned(&self, url: &str, path: &Path) -> anyhow::Result<()> {
+    pub fn ensure_repo_cloned(&self, url: &str, path: &Path) -> anyhow::Result<()> {
         if path.exists() {
             // update
             // std::process::Command::new("git")
@@ -71,7 +71,7 @@ impl<S: Store> AnvilCore<S> {
                 &format!("git -C {} fetch", path.to_str().unwrap()),
                 None,
                 "green",
-                "Fetch",
+                "Pulling from sources...",
                 "Pulled !",
             )?;
         } else {
@@ -80,7 +80,7 @@ impl<S: Store> AnvilCore<S> {
                 &format!("git clone {url} {}", path.to_str().unwrap()),
                 None,
                 "green",
-                "Cloning",
+                "Cloning...",
                 "Repo clonned !",
             )?;
             // std::process::Command::new("git")
@@ -93,14 +93,14 @@ impl<S: Store> AnvilCore<S> {
         Ok(())
     }
 
-    fn load_block_from_repo(repo_path: &Path) -> anyhow::Result<Vec<Meta>> {
+    pub fn load_block_from_repo(repo_path: &Path) -> anyhow::Result<Vec<Meta>> {
         let block_path = repo_path.join(".anvil/blocks.json");
         let content = std::fs::read_to_string(block_path)?;
         let blocks: Vec<Meta> = serde_json::from_str(&content)?;
         Ok(blocks)
     }
 
-    fn resolve_version(blocks: &[Meta], version: Option<String>) -> anyhow::Result<&Meta> {
+    pub fn resolve_version(blocks: &[Meta], version: Option<String>) -> anyhow::Result<&Meta> {
         if let Some(v) = version {
             blocks
                 .iter()
@@ -135,7 +135,7 @@ impl<S: Store> AnvilCore<S> {
         Ok(repo_path.join(&self.config.build.entrypoint))
     }
 
-    fn install_binary(&self, name: &str, compiled_bin: &PathBuf) -> anyhow::Result<PathBuf> {
+    pub fn install_binary(&self, name: &str, compiled_bin: &PathBuf) -> anyhow::Result<PathBuf> {
         let install_path = home_dir().unwrap().join(".anvil/bin").join(name);
 
         std::fs::create_dir_all(install_path.parent().unwrap())?;
@@ -144,7 +144,7 @@ impl<S: Store> AnvilCore<S> {
         Ok(install_path)
     }
 
-    fn update_meta(
+    pub fn update_meta(
         &self,
         name: &str,
         url: &str,

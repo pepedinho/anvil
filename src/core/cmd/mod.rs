@@ -10,6 +10,7 @@ use crate::config::Build;
 
 pub mod install;
 pub mod pack;
+pub mod switch;
 
 pub fn run_build_cmd(build: &Build, project_root: &PathBuf) -> anyhow::Result<()> {
     let pb = ProgressBar::new_spinner();

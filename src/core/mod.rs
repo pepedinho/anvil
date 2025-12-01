@@ -114,9 +114,8 @@ pub fn interpret(cli: &Cli) -> anyhow::Result<()> {
         Commands::Install { url, version } => {
             AnvilCore::new(None, store, env::current_dir()?)?.install(url, version.clone())
         }
-        Commands::Switch {
-            project: _,
-            version: _,
-        } => Ok(()),
+        Commands::Switch { project, version } => {
+            AnvilCore::new(None, store, env::current_dir()?)?.switch(project, version)
+        }
     }
 }
